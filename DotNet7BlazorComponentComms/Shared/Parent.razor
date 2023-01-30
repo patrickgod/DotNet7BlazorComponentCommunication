@@ -1,0 +1,35 @@
+﻿@inject MessageService MessageService
+@implements IDisposable
+
+<div>
+    <h3>Parent</h3>
+    <span>Hi, I'm @Name.</span><br />
+    <span>My child says: "@childText"</span><br />
+    <span>Someone said: "@MessageService.Message"</span><br />
+
+    <Child Name="@ChildName" SayHi="ChildSaidHi"/>
+</div>
+@code {
+    [Parameter]
+    public string? Name { get; set; }
+
+    [Parameter]
+    public string? ChildName { get; set; }
+
+    string childText = "Nothing.";
+
+    private void ChildSaidHi(string message)
+    {
+        childText = message;
+    }
+
+    protected override void OnInitialized()
+    {
+        MessageService.SaidSomething += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        MessageService.SaidSomething -= StateHasChanged;
+    }
+}
